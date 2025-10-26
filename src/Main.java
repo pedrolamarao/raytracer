@@ -37,26 +37,73 @@ double hitSphere(
 }
 
 void main() {
-    int image_width = 256;
-    int image_height = 256;
+    // Image
+
+    var aspectRatio = 16.0 / 9.0;
+    int imageWidth = 400;
+
+    // Calculate the image height, and ensure that it's at least 1.
+    int imageHeight = (int) (imageWidth / aspectRatio);
+    imageHeight = Math.max(imageHeight, 1);
+
+    // World
+    var world = new HittableList();
+    world.add(new Sphere(
+            new Vec3(0, 0, -1),
+            0.5
+    ));
+    world.add(new Sphere(
+            new Vec3(0, -100.5, -1),
+            100
+    ));
+
+    // Camera
+    var focalLength = 1.0;
+    var viewportHeight = 2.0;
+    var viewportWidth = viewportHeight * (((double) imageWidth) / imageHeight);
+    @Point Vec3 cameraCenter = new Vec3(0, 0, 0);
+
+    // Calculate the vectors across the horizontal and down the vertical viewport edges.
+    var viewportU = new Vec3(viewportWidth, 0, 0);
+    var viewportV = new Vec3(0, -viewportHeight, 0);
+
+    // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+    var pixelDeltaU = viewportU.divide(imageWidth);
+    var pixelDeltaV = viewportV.divide(imageHeight);
+
+    // Calculate the location of the upper left pixel.
+    var viewportUpperLeft = cameraCenter
+            .minus(new Vec3(0, 0, focalLength))
+            .minus(viewportU.divide(2))
+            .minus(viewportV.divide(2));
+
+    var pixel00Loc = viewportUpperLeft.plus(
+            pixelDeltaU.plus(pixelDeltaV).multiply(0.5)
+    );
 
     IO.print("P3\n");
-    IO.print(image_width);
+    IO.print(imageWidth);
     IO.print(" ");
-    IO.print(image_height);
+    IO.print(imageHeight);
     IO.print("\n255\n");
 
-    for (int j = 0; j < image_height; j++) {
-        for (int i = 0; i < image_width; i++) {
-            var r = ((double) i) / (image_width - 1);
-            var g = ((double) i) / (image_height - 1);
-            var b = 0.0;
+    for (int j = 0; j < imageHeight; j++) {
+        System.err.print("\rScanlines remaining: ");
+        System.err.print((imageHeight - j));
+        System.err.print(" ");
+        for (int i = 0; i < imageWidth; i++) {
+            var pixelCenter = pixel00Loc
+                    .plus(pixelDeltaU.multiply(i))
+                    .plus(pixelDeltaV.multiply(j));
+            var rayDirection = pixelCenter.minus(cameraCenter);
+            var r = new Ray(cameraCenter, rayDirection);
 
-            int ir = (int) (255.999 * r);
-            int ig = (int) (255.999 * g);
-            int ib = (int) (255.999 * b);
+            @Color Vec3 pixelColor = rayColor(r, world);
 
             Colors.write(System.out, pixelColor);
         }
     }
+
+    System.err.print("\rDone.                 \n");
 }
+
