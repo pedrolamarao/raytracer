@@ -1,25 +1,26 @@
-void writeColor(
-        PrintStream out,
-        @Color Vec3 pixelColor
-) {
-    var r = pixelColor.x();
-    var g = pixelColor.y();
-    var b = pixelColor.z();
 
-    int rByte = (int) (255.999 * r);
-    int gByte = (int) (255.999 * g);
-    int bByte = (int) (255.999 * b);
-
-    out.print(rByte);
-    out.print(" ");
-    out.print(gByte);
-    out.print(" ");
-    out.print(bByte);
-    out.print("\n");
-}
 
 double degreesToRadians(double degrees) {
     return degrees * Math.PI / 180.0;
+}
+
+
+double hitSphere(
+        @Point Vec3 center,
+        double radius,
+        Ray r
+) {
+    var oc = center.minus(r.origin());
+    var a = r.direction().lengthSquared();
+    var h = r.direction().dotProduct(oc);
+    var c = oc.lengthSquared() - radius * radius;
+    var discriminant = h * h - a * c;
+    if (discriminant < 0) {
+        return -1;
+    }
+    else {
+        return (h - Math.sqrt(discriminant)) / a;
+    }
 }
 
 @Color Vec3 rayColor(Ray r, Hittable world) {
@@ -55,12 +56,7 @@ void main() {
             int ig = (int) (255.999 * g);
             int ib = (int) (255.999 * b);
 
-            IO.print(ir);
-            IO.print(" ");
-            IO.print(ig);
-            IO.print(" ");
-            IO.print(ib);
-            IO.print("\n");
+            Colors.write(System.out, pixelColor);
         }
     }
 }

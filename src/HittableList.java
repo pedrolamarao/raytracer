@@ -36,4 +36,9 @@ value class HittableList implements Hittable {
 
         return rec;
     }
+
+    @Override
+    public String toString() {
+        return objects.toString();
+    }
 }
