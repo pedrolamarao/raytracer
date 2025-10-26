@@ -1,3 +1,40 @@
+void writeColor(
+        PrintStream out,
+        @Color Vec3 pixelColor
+) {
+    var r = pixelColor.x();
+    var g = pixelColor.y();
+    var b = pixelColor.z();
+
+    int rByte = (int) (255.999 * r);
+    int gByte = (int) (255.999 * g);
+    int bByte = (int) (255.999 * b);
+
+    out.print(rByte);
+    out.print(" ");
+    out.print(gByte);
+    out.print(" ");
+    out.print(bByte);
+    out.print("\n");
+}
+
+double degreesToRadians(double degrees) {
+    return degrees * Math.PI / 180.0;
+}
+
+@Color Vec3 rayColor(Ray r, Hittable world) {
+    var rec = world.hit(r, new Interval(0, Double.POSITIVE_INFINITY))
+            .orElse(null);
+    if (rec != null) {
+        return rec.normal().plus(new Vec3(1, 1, 1)).multiply(0.5);
+    }
+
+    var unitDirection = r.direction().unitVector();
+    var a = 0.5 * (unitDirection.y() + 1);
+    return new Vec3(1, 1, 1).multiply(1.0 - a)
+            .plus(new Vec3(0.5, 0.7, 1).multiply(a));
+}
+
 void main() {
     int image_width = 256;
     int image_height = 256;

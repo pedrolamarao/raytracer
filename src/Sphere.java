@@ -1,0 +1,42 @@
+import java.util.Optional;
+
+value record Sphere(
+        @Point Vec3 center,
+        double radius
+) implements Hittable {
+    @Override
+    public Optional<HitRecord> hit(
+            Ray r,
+            Interval rayT
+    ) {
+        var oc = center.minus(r.origin());
+        var a = r.direction().lengthSquared();
+        var h = r.direction().dotProduct(oc);
+        var c = oc.lengthSquared() - radius * radius;
+        var discriminant = h * h - a * c;
+        if (discriminant < 0) {
+            return Optional.empty();
+        }
+
+        var sqrtd = Math.sqrt(discriminant);
+
+        var root = (h - sqrtd) / a;
+        if (!rayT.surrounds(root)) {
+            root = (h + sqrtd) / a;
+            if (!rayT.surrounds(root)) {
+                return Optional.empty();
+            }
+        }
+
+        var t = root;
+        var p = r.at(t);
+        var normal = (p.minus(center)).divide(radius);
+        var outwardNormal = p.minus(center).divide(radius);
+        return Optional.of(new HitRecord(
+                p,
+                normal,
+                t,
+                false
+        ).withFaceNormal(r, outwardNormal));
+    }
+}
