@@ -11,9 +11,11 @@ public final class Colors {
         var g = pixelColor.y();
         var b = pixelColor.z();
 
-        int rByte = (int) (255.999 * r);
-        int gByte = (int) (255.999 * g);
-        int bByte = (int) (255.999 * b);
+        var intensity = new Interval(0.000, 0.999);
+
+        int rByte = (int) (256 * intensity.clamp(r));
+        int gByte = (int) (256 * intensity.clamp(g));
+        int bByte = (int) (256 * intensity.clamp(b));
 
         out.print(rByte);
         out.print(" ");

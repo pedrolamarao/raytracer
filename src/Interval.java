@@ -17,6 +17,12 @@ value record Interval(
         return min < x && x < max;
     }
 
+    double clamp(double x) {
+        if (x < min) return min;
+        if (x > max) return max;
+        return x;
+    }
+
     static final Interval EMPTY = new Interval(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
     static final Interval UNIVERSE = new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 }

@@ -2,6 +2,7 @@ public final class Camera {
 
     double aspectRatio = 1.0;
     int imageWidth = 100;
+    int samplesPerPixel = 10;
 
     void render(Hittable world) {
         initialize();
@@ -17,15 +18,15 @@ public final class Camera {
             System.err.print((imageHeight - j));
             System.err.print(" ");
             for (int i = 0; i < imageWidth; i++) {
-                var pixelCenter = pixel00Loc
-                        .plus(pixelDeltaU.multiply(i))
-                        .plus(pixelDeltaV.multiply(j));
-                var rayDirection = pixelCenter.minus(cameraCenter);
-                var r = new Ray(cameraCenter, rayDirection);
 
-                @Color Vec3 pixelColor = rayColor(r, world);
+                @Color Vec3 pixelColor = new Vec3(0, 0, 0);
 
-                Colors.write(System.out, pixelColor);
+                for (int sample = 0; sample < samplesPerPixel; sample++) {
+                    var r = getRay(i, j);
+                    pixelColor = pixelColor.plus(rayColor(r, world));
+                }
+
+                Colors.write(System.out, pixelColor.multiply(pixelSamplesScale));
             }
         }
 
@@ -34,6 +35,7 @@ public final class Camera {
 
 
     private int imageHeight;
+    double pixelSamplesScale;
     private @Point Vec3 cameraCenter;
     private @Point Vec3 pixel00Loc;
     private Vec3 pixelDeltaU;
@@ -42,6 +44,8 @@ public final class Camera {
     private void initialize() {
         int imageHeight = (int) (imageWidth / aspectRatio);
         this.imageHeight = Math.max(imageHeight, 1);
+
+        pixelSamplesScale = 1.0 / samplesPerPixel;
 
         this.cameraCenter = new Vec3(0, 0, 0);
 
@@ -67,6 +71,25 @@ public final class Camera {
         this.pixel00Loc = viewportUpperLeft.plus(
                 pixelDeltaU.plus(pixelDeltaV).multiply(0.5)
         );
+    }
+
+    private Ray getRay(int i, int j) {
+        // Construct a camera ray originating from the origin and directed at randomly sampled
+        // point around the pixel location i, j.
+
+        var offset = sampleSquare();
+        var pixelSample = pixel00Loc
+                .plus(pixelDeltaU.multiply(i + offset.x()))
+                .plus(pixelDeltaV.multiply(j + offset.y()));
+        var rayOrigin = cameraCenter;
+        var rayDirection = pixelSample.minus(rayOrigin);
+
+        return new Ray(rayOrigin, rayDirection);
+    }
+
+    private Vec3 sampleSquare() {
+        // Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
+        return new Vec3(Math.random() - 0.5, Math.random() - 0.5, 0);
     }
 
     private @Color Vec3 rayColor(Ray r, Hittable world) {
