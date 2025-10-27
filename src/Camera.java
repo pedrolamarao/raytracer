@@ -10,6 +10,9 @@ public final class Camera {
     @Point Vec3 lookAt   = new Vec3(0,0,-1);  // Point camera is looking at
     Vec3   vup      = new Vec3(0,1,0);     // Camera-relative "up" direction
 
+    double defocusAngle = 0;  // Variation angle of rays through each pixel
+    double focusDist = 10;    // Distance from camera lookfrom point to plane of perfect focus
+
     void render(Hittable world) {
         initialize();
 
@@ -46,7 +49,9 @@ public final class Camera {
     private @Point Vec3 pixel00Loc;
     private Vec3 pixelDeltaU;
     private Vec3 pixelDeltaV;
-    Vec3   u, v, w;              // Camera frame basis vectors
+    private Vec3   u, v, w;              // Camera frame basis vectors
+    private Vec3 defocusDiskU;
+    private Vec3 defocusDiskV;
 
     private void initialize() {
         int imageHeight = (int) (imageWidth / aspectRatio);
@@ -57,10 +62,9 @@ public final class Camera {
         center = lookFrom;
 
         // Camera
-        var focalLength = (lookFrom.minus(lookAt)).length();
         var theta = Math.toRadians(vfov);
         var h = Math.tan(theta/2);
-        var viewportHeight = 2 * h * focalLength;
+        var viewportHeight = 2 * h * focusDist;
         var viewportWidth = viewportHeight * (((double) imageWidth) / imageHeight);
 
         // Calculate the u,v,w unit basis vectors for the camera coordinate frame.
@@ -78,27 +82,40 @@ public final class Camera {
 
         // Calculate the location of the upper left pixel.
         var viewportUpperLeft = center
-                .minus(w.multiply(focalLength))
+                .minus(w.multiply(focusDist))
                 .minus(viewportU.divide(2))
                 .minus(viewportV.divide(2));
 
         this.pixel00Loc = viewportUpperLeft.plus(
                 pixelDeltaU.plus(pixelDeltaV).multiply(0.5)
         );
+
+        // Calculate the camera defocus disk basis vectors.
+        var defocusRadius = focusDist * Math.tan(Math.toRadians(defocusAngle / 2));
+        defocusDiskU = u.multiply(defocusRadius);
+        defocusDiskV = v.multiply(defocusRadius);
     }
 
     private Ray getRay(int i, int j) {
-        // Construct a camera ray originating from the origin and directed at randomly sampled
-        // point around the pixel location i, j.
+        // Construct a camera ray originating from the defocus disk and directed at a randomly
+        // sampled point around the pixel location i, j.
 
         var offset = sampleSquare();
         var pixelSample = pixel00Loc
                 .plus(pixelDeltaU.multiply(i + offset.x()))
                 .plus(pixelDeltaV.multiply(j + offset.y()));
-        var rayOrigin = center;
+        var rayOrigin = (defocusAngle <= 0) ? center : defocusDiskSample();;
         var rayDirection = pixelSample.minus(rayOrigin);
 
         return new Ray(rayOrigin, rayDirection);
+    }
+
+    private @Point Vec3 defocusDiskSample() {
+        // Returns a random point in the camera defocus disk.
+        var p = Vec3.randomInUnitDisk();
+        return center
+                .plus(defocusDiskU.multiply(p.x()))
+                .plus(defocusDiskV.multiply(p.y()));
     }
 
     private Vec3 sampleSquare() {

@@ -129,4 +129,13 @@ value record Vec3(
         var r_out_parallel = n.multiply(-Math.sqrt(Math.abs(1.0 - r_out_perp.lengthSquared())));
         return r_out_perp.plus(r_out_parallel);
     }
+
+    static Vec3 randomInUnitDisk() {
+        while (true) {
+            var p = new Vec3(randomDouble(-1,1), randomDouble(-1,1), 0);
+            if (p.lengthSquared() < 1) {
+                return p;
+            }
+        }
+    }
 }
