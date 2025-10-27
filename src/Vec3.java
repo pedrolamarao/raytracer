@@ -64,4 +64,42 @@ value record Vec3(
     Vec3 unitVector() {
         return this.divide(length());
     }
+
+    static Vec3 random() {
+        return new Vec3(Math.random(), Math.random(), Math.random());
+    }
+
+    private static double randomDouble(double min, double max) {
+        // Returns a random real in [min,max).
+        return min + (max-min)*Math.random();
+    }
+
+    static Vec3 random(double min, double max) {
+        return new Vec3(
+                randomDouble(min, max),
+                randomDouble(min, max),
+                randomDouble(min, max)
+        );
+    }
+
+    static Vec3 randomUnitVector() {
+        while (true) {
+            var p = Vec3.random(-1,1);
+            var lensq = p.lengthSquared();
+            if (1e-160 < lensq && lensq <= 1)
+                return p.divide(Math.sqrt(lensq));
+        }
+    }
+
+    static Vec3 randomOnHemisphere(Vec3 normal) {
+        var on_unit_sphere = randomUnitVector();
+        if (on_unit_sphere.dotProduct(normal) > 0.0) {
+            // In the same hemisphere as the normal
+            return on_unit_sphere;
+        }
+        else {
+            return on_unit_sphere.multiply(-1);
+        }
+    }
+
 }

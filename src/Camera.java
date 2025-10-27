@@ -3,6 +3,7 @@ public final class Camera {
     double aspectRatio = 1.0;
     int imageWidth = 100;
     int samplesPerPixel = 10;
+    int maxDepth = 10;
 
     void render(Hittable world) {
         initialize();
@@ -23,7 +24,7 @@ public final class Camera {
 
                 for (int sample = 0; sample < samplesPerPixel; sample++) {
                     var r = getRay(i, j);
-                    pixelColor = pixelColor.plus(rayColor(r, world));
+                    pixelColor = pixelColor.plus(rayColor(r, maxDepth, world));
                 }
 
                 Colors.write(System.out, pixelColor.multiply(pixelSamplesScale));
@@ -92,11 +93,18 @@ public final class Camera {
         return new Vec3(Math.random() - 0.5, Math.random() - 0.5, 0);
     }
 
-    private @Color Vec3 rayColor(Ray r, Hittable world) {
-        var rec = world.hit(r, new Interval(0, Double.POSITIVE_INFINITY))
+    private @Color Vec3 rayColor(Ray r, int depth, Hittable world) {
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if (depth <= 0) {
+            return new Vec3(0,0,0);
+        }
+
+
+        var rec = world.hit(r, new Interval(0.001, Double.POSITIVE_INFINITY))
                 .orElse(null);
         if (rec != null) {
-            return rec.normal().plus(new Vec3(1, 1, 1)).multiply(0.5);
+            var direction = Vec3.randomOnHemisphere(rec.normal());
+            return rayColor(new Ray(rec.p(), direction), depth - 1, world).multiply(0.5);
         }
 
         var unitDirection = r.direction().unitVector();

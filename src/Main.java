@@ -18,7 +18,8 @@ void main() {
     var camera = new Camera();
     camera.imageWidth = 400;
     camera.aspectRatio = 16.0 / 9.0;
-
+    camera.samplesPerPixel = 100;
+    camera.maxDepth = 50;
     camera.render(world);
 }
 

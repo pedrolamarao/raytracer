@@ -4,6 +4,14 @@ value record Sphere(
         @Point Vec3 center,
         double radius
 ) implements Hittable {
+    Sphere(
+            @Point Vec3 center,
+            double radius
+    ) {
+        this.center = center;
+        this.radius = Math.max(0, radius);
+    }
+
     @Override
     public Optional<HitRecord> hit(
             Ray r,
