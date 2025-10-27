@@ -15,18 +15,21 @@ void main() {
     var material_right  = new Metal(new Vec3(0.8, 0.6, 0.2), 1.0);
 
     world.add(new Sphere(new Vec3( 0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(new Sphere(new Vec3( 0.0,    0.0, -1.2),   0.5, material_center));
-    world.add(new Sphere(new Vec3(-1.0,    0.0, -1.0),   0.5, material_left));
-    world.add(new Sphere(new Vec3(-1.0,    0.0, -1.0),   0.4, material_bubble));
-    world.add(new Sphere(new Vec3( 1.0,    0.0, -1.0),   0.5, material_right));
-
+    world.add(new Sphere(new Vec3(  0.0,    0.0, -1.2),   0.5, material_center));
+    world.add(new Sphere(new Vec3( -1.0,    0.0, -1.0),   0.5, material_left));
+    world.add(new Sphere(new Vec3( -1.0,    0.0, -1.0),   0.4, material_bubble));
+    world.add(new Sphere(new Vec3(  1.0,    0.0, -1.0),   0.5, material_right));
 
     var camera = new Camera();
     camera.imageWidth = 400;
     camera.aspectRatio = 16.0 / 9.0;
     camera.samplesPerPixel = 100;
-    camera.maxDepth = 5000;
+    camera.maxDepth = 50;
 
+    camera.vfov = 20;
+    camera.lookFrom = new Vec3(-2, 2, 1);
+    camera.lookAt = new Vec3(0, 0, -1);
+    camera.vup = new Vec3(0, 1, 0);
     camera.render(world);
 }
 

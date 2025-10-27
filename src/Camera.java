@@ -5,6 +5,11 @@ public final class Camera {
     int samplesPerPixel = 10;
     int maxDepth = 10;
 
+    double vfov = 90;  // Vertical view angle (field of view)
+    @Point Vec3 lookFrom = new Vec3(0,0,0);   // Point camera is looking from
+    @Point Vec3 lookAt   = new Vec3(0,0,-1);  // Point camera is looking at
+    Vec3   vup      = new Vec3(0,1,0);     // Camera-relative "up" direction
+
     void render(Hittable world) {
         initialize();
 
@@ -37,10 +42,11 @@ public final class Camera {
 
     private int imageHeight;
     double pixelSamplesScale;
-    private @Point Vec3 cameraCenter;
+    private @Point Vec3 center;
     private @Point Vec3 pixel00Loc;
     private Vec3 pixelDeltaU;
     private Vec3 pixelDeltaV;
+    Vec3   u, v, w;              // Camera frame basis vectors
 
     private void initialize() {
         int imageHeight = (int) (imageWidth / aspectRatio);
@@ -48,24 +54,31 @@ public final class Camera {
 
         pixelSamplesScale = 1.0 / samplesPerPixel;
 
-        this.cameraCenter = new Vec3(0, 0, 0);
+        center = lookFrom;
 
         // Camera
-        var focalLength = 1.0;
-        var viewportHeight = 2.0;
+        var focalLength = (lookFrom.minus(lookAt)).length();
+        var theta = Math.toRadians(vfov);
+        var h = Math.tan(theta/2);
+        var viewportHeight = 2 * h * focalLength;
         var viewportWidth = viewportHeight * (((double) imageWidth) / imageHeight);
 
+        // Calculate the u,v,w unit basis vectors for the camera coordinate frame.
+        w = lookFrom.minus(lookAt).unitVector();
+        u = vup.crossProduct(w).unitVector();
+        v = w.crossProduct(u);
+
         // Calculate the vectors across the horizontal and down the vertical viewport edges.
-        var viewportU = new Vec3(viewportWidth, 0, 0);
-        var viewportV = new Vec3(0, -viewportHeight, 0);
+        var viewportU = u.multiply(viewportWidth);
+        var viewportV = v.multiply(-viewportHeight);
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel.
         this.pixelDeltaU = viewportU.divide(imageWidth);
         this.pixelDeltaV = viewportV.divide(imageHeight);
 
         // Calculate the location of the upper left pixel.
-        var viewportUpperLeft = cameraCenter
-                .minus(new Vec3(0, 0, focalLength))
+        var viewportUpperLeft = center
+                .minus(w.multiply(focalLength))
                 .minus(viewportU.divide(2))
                 .minus(viewportV.divide(2));
 
@@ -82,7 +95,7 @@ public final class Camera {
         var pixelSample = pixel00Loc
                 .plus(pixelDeltaU.multiply(i + offset.x()))
                 .plus(pixelDeltaV.multiply(j + offset.y()));
-        var rayOrigin = cameraCenter;
+        var rayOrigin = center;
         var rayDirection = pixelSample.minus(rayOrigin);
 
         return new Ray(rayOrigin, rayDirection);

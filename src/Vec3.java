@@ -60,12 +60,16 @@ value record Vec3(
         return x * v.x + y * v.y + z * v.z;
     }
 
-    Vec3 crossProduct(Vec3 v) {
+    static Vec3 cross(Vec3 u, Vec3 v) {
         return new Vec3(
-                y * v.z - z * v.y,
-                z * v.x - x * v.z,
-                x * v.y - y * v.x
+                u.y * v.z - u.z * v.y,
+                u.z * v.x - u.x * v.z,
+                u.x * v.y - u.y * v.x
         );
+    }
+
+    Vec3 crossProduct(Vec3 v) {
+        return cross(this, v);
     }
 
     Vec3 unitVector() {
