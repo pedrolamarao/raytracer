@@ -10,7 +10,7 @@ void main() {
 
     var material_ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
     var material_center = new Lambertian(new Vec3(0.1, 0.2, 0.5));
-    var material_left   = new Metal(new Vec3(0.8, 0.8, 0.8), 0.3);
+    var material_left   = new Dialectric(1.50);
     var material_right  = new Metal(new Vec3(0.8, 0.6, 0.2), 1.0);
 
     world.add(new Sphere(new Vec3( 0.0, -100.5, -1.0), 100.0, material_ground));

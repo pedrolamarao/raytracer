@@ -118,4 +118,11 @@ value record Vec3(
     static Vec3 reflect(Vec3 v, Vec3 n) {
         return v.minus(n.multiply(v.dotProduct(n)).multiply(2));
     }
+
+    static Vec3 refract(Vec3 uv, Vec3 n, double etai_over_etat) {
+        var cos_theta = Math.min(uv.multiply(-1).dotProduct(n), 1.0);
+        var r_out_perp =  uv.plus(n.multiply(cos_theta)).multiply(etai_over_etat);
+        var r_out_parallel = n.multiply(-Math.sqrt(Math.abs(1.0 - r_out_perp.lengthSquared())));
+        return r_out_perp.plus(r_out_parallel);
+    }
 }
