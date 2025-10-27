@@ -6,20 +6,25 @@ double degreesToRadians(double degrees) {
 void main() {
     // World
     var world = new HittableList();
-    world.add(new Sphere(
-            new Vec3(0, 0, -1),
-            0.5
-    ));
-    world.add(new Sphere(
-            new Vec3(0, -100.5, -1),
-            100
-    ));
+
+
+    var material_ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
+    var material_center = new Lambertian(new Vec3(0.1, 0.2, 0.5));
+    var material_left   = new Metal(new Vec3(0.8, 0.8, 0.8));
+    var material_right  = new Metal(new Vec3(0.8, 0.6, 0.2));
+
+    world.add(new Sphere(new Vec3( 0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(new Sphere(new Vec3( 0.0,    0.0, -1.2),   0.5, material_center));
+    world.add(new Sphere(new Vec3(-1.0,    0.0, -1.0),   0.5, material_left));
+    world.add(new Sphere(new Vec3( 1.0,    0.0, -1.0),   0.5, material_right));
+
 
     var camera = new Camera();
     camera.imageWidth = 400;
     camera.aspectRatio = 16.0 / 9.0;
     camera.samplesPerPixel = 100;
-    camera.maxDepth = 50;
+    camera.maxDepth = 5000;
+
     camera.render(world);
 }
 

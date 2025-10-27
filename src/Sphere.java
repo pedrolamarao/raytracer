@@ -2,14 +2,17 @@ import java.util.Optional;
 
 value record Sphere(
         @Point Vec3 center,
-        double radius
+        double radius,
+        Material material
 ) implements Hittable {
     Sphere(
             @Point Vec3 center,
-            double radius
+            double radius,
+            Material material
     ) {
         this.center = center;
         this.radius = Math.max(0, radius);
+        this.material = material;
     }
 
     @Override
@@ -43,6 +46,7 @@ value record Sphere(
         return Optional.of(new HitRecord(
                 p,
                 normal,
+                material,
                 t,
                 false
         ).withFaceNormal(r, outwardNormal));

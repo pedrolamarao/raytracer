@@ -37,6 +37,13 @@ value record Vec3(
         );
     }
 
+    Vec3 multiply(Vec3 v) {
+        return new Vec3(
+                x * v.x, y * v.y, z * v.z
+        );
+    }
+
+
     Vec3 divide(double t) {
         return multiply(1 / t);
     }
@@ -102,4 +109,13 @@ value record Vec3(
         }
     }
 
+    boolean nearZero() {
+        // Return true if the vector is close to zero in all dimensions.
+        var s = 1e-8;
+        return (Math.abs(x) < s) && (Math.abs(y) < s) && (Math.abs(z) < s);
+    }
+
+    static Vec3 reflect(Vec3 v, Vec3 n) {
+        return v.minus(n.multiply(v.dotProduct(n)).multiply(2));
+    }
 }

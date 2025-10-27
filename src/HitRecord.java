@@ -1,6 +1,7 @@
 value record HitRecord(
         @Point Vec3 p,
         Vec3 normal,
+        Material material,
         double t,
         boolean frontFace
 ) {
@@ -15,6 +16,7 @@ value record HitRecord(
         return new HitRecord(
                 p,
                 normal,
+                material,
                 t,
                 frontFace
         );
