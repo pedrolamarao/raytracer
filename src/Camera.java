@@ -103,7 +103,7 @@ public final class Camera {
         var rec = world.hit(r, new Interval(0.001, Double.POSITIVE_INFINITY))
                 .orElse(null);
         if (rec != null) {
-            var direction = Vec3.randomOnHemisphere(rec.normal());
+            var direction = rec.normal().plus(Vec3.randomUnitVector());
             return rayColor(new Ray(rec.p(), direction), depth - 1, world).multiply(0.5);
         }
 
