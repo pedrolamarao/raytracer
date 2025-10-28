@@ -1,10 +1,10 @@
 run:
-    #@zig c++ reference/src/InOneWeekend/main.cc
-    #echo 'Reference C++ implementation (no optimizations)'
-    #@time ./a.out > reference_cplusplus.ppm
+    @zig c++ reference/src/InOneWeekend/main.cc
+    echo 'Reference C++ implementation (no optimizations)'
+    @time ./a.out > reference_cplusplus.ppm
 
     @zig c++ -O3 reference/src/InOneWeekend/main.cc
-    @echo 'Reference C++ implementation (with optimizations)'
+    @echo 'Reference C++ implementation (-O3)'
     @time ./a.out > reference_cplusplus.ppm
 
     @java scripts/Value.java
