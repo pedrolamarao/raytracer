@@ -3,22 +3,6 @@ value record Vec3(
         double y,
         double z
 ) {
-    Vec3() {
-        this(0, 0, 0);
-    }
-
-    Vec3 withX(double x) {
-        return new Vec3(x, y, z);
-    }
-
-    Vec3 withY(double y) {
-        return new Vec3(x, y, z);
-    }
-
-    Vec3 withZ(double z) {
-        return new Vec3(x, y, z);
-    }
-
     Vec3 plus(Vec3 v) {
         return new Vec3(
                 x + v.x, y + v.y, z + v.z
