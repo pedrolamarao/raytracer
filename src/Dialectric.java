@@ -13,7 +13,6 @@ value class Dialectric implements Material {
         double ri = rec.frontFace() ? (1.0/refractionIndex) : refractionIndex;
 
         var unit_direction = r_in.direction().unitVector();
-        var refracted = Vec3.refract(unit_direction, rec.normal(), ri);
 
         double cos_theta = Math.min(unit_direction.multiply(-1).dotProduct(rec.normal()), 1.0);
         double sin_theta = Math.sqrt(1.0 - cos_theta*cos_theta);

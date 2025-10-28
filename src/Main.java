@@ -51,9 +51,9 @@ void main() {
 
     var camera = new Camera();
     camera.aspectRatio      = 16.0 / 9.0;
-    camera.imageWidth       = 100;
-    camera.samplesPerPixel = 500;
-    camera.maxDepth         = 50;
+    camera.imageWidth       = 400;
+    camera.samplesPerPixel  = 50;
+    camera.maxDepth         = 20;
 
     camera.vfov     = 20;
     camera.lookFrom = new Vec3(13,2,3);
