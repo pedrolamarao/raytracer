@@ -6,6 +6,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
 
 public class Main {
 
@@ -89,6 +90,7 @@ public class Main {
             .forks(1)
             .measurementBatchSize(1)
             .measurementIterations(1)
+            .timeout(TimeValue.minutes(30))
             .build();
         new Runner(opt).run();
     }
