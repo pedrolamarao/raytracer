@@ -130,8 +130,7 @@ public final class Camera {
         }
 
 
-        var rec = world.hit(r, new Interval(0.001, Double.POSITIVE_INFINITY))
-                .orElse(null);
+        var rec = world.hit(r, new Interval(0.001, Double.POSITIVE_INFINITY));
         if (rec != null) {
             var scatteredRay = rec.material().scatter(r, rec).orElse(null);
             if (scatteredRay != null) {
