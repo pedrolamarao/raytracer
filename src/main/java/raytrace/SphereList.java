@@ -1,3 +1,5 @@
+package raytrace;
+
 value class SphereList implements Hittable {
     private final Sphere[] spheres;
 

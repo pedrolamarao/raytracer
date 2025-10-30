@@ -1,3 +1,5 @@
+package raytrace;
+
 import java.util.Optional;
 
 value class Dialectric implements Material {

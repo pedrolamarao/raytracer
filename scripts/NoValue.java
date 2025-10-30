@@ -1,6 +1,6 @@
 void main() throws Exception {
     List<Path> files;
-    try (var list = Files.list(Path.of("src"))) {
+    try (var list = Files.list(Path.of("src/main/java/raytrace"))) {
         files = list.toList();
     }
 

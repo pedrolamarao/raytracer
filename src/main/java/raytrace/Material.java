@@ -1,3 +1,5 @@
+package raytrace;
+
 import java.util.Optional;
 
 interface Material {

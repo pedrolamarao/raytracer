@@ -1,3 +1,5 @@
+package raytrace;
+
 public final class Camera {
 
     double aspectRatio = 1.0;
@@ -6,9 +8,9 @@ public final class Camera {
     int maxDepth = 10;
 
     double vfov = 90;  // Vertical view angle (field of view)
-    @Point Vec3 lookFrom = new Vec3(0,0,0);   // Point camera is looking from
-    @Point Vec3 lookAt   = new Vec3(0,0,-1);  // Point camera is looking at
-    Vec3   vup      = new Vec3(0,1,0);     // Camera-relative "up" direction
+    @Point Vec3 lookFrom = new Vec3(0,0,0);   // sandbox.Point camera is looking from
+    @Point Vec3 lookAt   = new Vec3(0,0,-1);  // sandbox.Point camera is looking at
+    Vec3   vup      = new Vec3(0,1,0);     // sandbox.Camera-relative "up" direction
 
     double defocusAngle = 0;  // Variation angle of rays through each pixel
     double focusDist = 10;    // Distance from camera lookfrom point to plane of perfect focus
@@ -16,16 +18,16 @@ public final class Camera {
     void render(Hittable world) {
         initialize();
 
-        IO.print("P3\n");
-        IO.print(imageWidth);
-        IO.print(" ");
-        IO.print(imageHeight);
-        IO.print("\n255\n");
+//        IO.print("P3\n");
+//        IO.print(imageWidth);
+//        IO.print(" ");
+//        IO.print(imageHeight);
+//        IO.print("\n255\n");
 
         for (int j = 0; j < imageHeight; j++) {
-            System.err.print("\rScanlines remaining: ");
-            System.err.print((imageHeight - j));
-            System.err.print(" ");
+//            System.err.print("\rScanlines remaining: ");
+//            System.err.print((imageHeight - j));
+//            System.err.print(" ");
             for (int i = 0; i < imageWidth; i++) {
 
                 @Color Vec3 pixelColor = new Vec3(0, 0, 0);
@@ -35,11 +37,11 @@ public final class Camera {
                     pixelColor = pixelColor.plus(rayColor(r, maxDepth, world));
                 }
 
-                Colors.write(System.out, pixelColor.multiply(pixelSamplesScale));
+//                Colors.write(System.out, pixelColor.multiply(pixelSamplesScale));
             }
         }
 
-        System.err.print("\rDone.                 \n");
+//        System.err.print("\rDone.                 \n");
     }
 
 
@@ -49,7 +51,7 @@ public final class Camera {
     private @Point Vec3 pixel00Loc;
     private Vec3 pixelDeltaU;
     private Vec3 pixelDeltaV;
-    private Vec3   u, v, w;              // Camera frame basis vectors
+    private Vec3   u, v, w;              // sandbox.Camera frame basis vectors
     private Vec3 defocusDiskU;
     private Vec3 defocusDiskV;
 
@@ -61,7 +63,7 @@ public final class Camera {
 
         center = lookFrom;
 
-        // Camera
+        // sandbox.Camera
         var theta = Math.toRadians(vfov);
         var h = Math.tan(theta/2);
         var viewportHeight = 2 * h * focusDist;

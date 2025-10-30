@@ -1,3 +1,5 @@
+package raytrace;
+
 value record Interval(
         double min, double max
 ) {

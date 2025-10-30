@@ -1,4 +1,4 @@
-import java.util.Optional;
+package raytrace;
 
 interface Hittable {
     HitRecord hit(

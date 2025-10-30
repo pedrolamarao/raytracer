@@ -1,3 +1,5 @@
+package raytrace;
+
 import java.io.PrintStream;
 
 public final class Colors {

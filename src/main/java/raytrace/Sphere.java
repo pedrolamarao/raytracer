@@ -1,4 +1,4 @@
-import java.util.Optional;
+package raytrace;
 
 value record Sphere(
         @Point Vec3 center,
