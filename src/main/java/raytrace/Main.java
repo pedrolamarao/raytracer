@@ -1,6 +1,7 @@
 package raytrace;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -81,6 +82,7 @@ public class Main {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
             .include(Main.class.getSimpleName())
+            .mode(Mode.SingleShotTime)
             .warmupForks(1)
             .warmupBatchSize(1)
             .warmupIterations(1)
